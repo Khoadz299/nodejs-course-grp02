@@ -1,0 +1,9 @@
+npm:
+    #init project
+    npm init
+
+    #add a dependency for development purpose
+    npm install nodemon --save-dev
+
+    npm install slugify
+    npm remove slugify
