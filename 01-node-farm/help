@@ -5,5 +5,7 @@ npm:
     #add a dependency for development purpose
     npm install nodemon --save-dev
 
+    #add a dependency to project
     npm install slugify
+    #remove a dependency from project
     npm remove slugify
