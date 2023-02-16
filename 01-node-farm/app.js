@@ -34,7 +34,7 @@ const server = http.createServer((req, res) => {
         //     const product = jsonData[i];
         //     cards.push(replaceTemplates(templateCard, product));
         // }
-        let output = templateOverviews.replace(/{%PRODUCT_CARD%/g, cards.join(''));
+        let output = templateOverviews.replace(/{%PRODUCT_CARD%}/g, cards.join(''));
 
         res.writeHead(200, {
             'Content-type': 'text/html', // Content is HTML
