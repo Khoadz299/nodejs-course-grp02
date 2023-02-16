@@ -1,7 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const url = require('url');
-
+const templateHandler = require('./templateHandler/templateHandler')
 
 //Method 2: read the data once when starting app
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
@@ -11,18 +11,7 @@ const templateOverviews = fs.readFileSync(`${__dirname}/templates/overview.html`
 const templateCard = fs.readFileSync(`${__dirname}/templates/card.html`, 'utf-8');
 const templateProduct = fs.readFileSync(`${__dirname}/templates/product.html`, 'utf-8');
 
-const replaceTemplates = (template, product) => {
-    let output =  template.replace(/{%PRODUCTNAME%}/g, product.productName);
-    output = output.replace(/{%ID%}/g, product.id);
-    output = output.replace(/{%FROM%}/g, product.from);
-    output = output.replace(/{%IMAGE%}/g, product.image);
-    output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
-    output = output.replace(/{%PRICE%}/g, product.price);
-    output = output.replace(/{%QUANTITY%}/g, product.quantity);
-    output = output.replace(/{%DESCRIPTION%}/g, product.description);
-    output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
-    return output;
-}
+
 
 const server = http.createServer((req, res) => {
     console.log(req.url);
@@ -37,7 +26,7 @@ const server = http.createServer((req, res) => {
     if (pathname === '/overview'){
 
         //method 1
-        const cards = jsonData.map(d => replaceTemplates(templateCard, d));
+        const cards = jsonData.map(d => templateHandler.replaceTemplate(templateCard, d));
 
         //method 2
         // let cards = [];
@@ -54,7 +43,7 @@ const server = http.createServer((req, res) => {
     }
     else if (pathname === '/product'){
         const product = jsonData[query.id*1];
-        const output = replaceTemplates(templateProduct,product);
+        const output = templateHandler.replaceTemplate(templateProduct,product);
 
         res.writeHead(200, {
             'Content-type': 'text/html', // Content is HTML
