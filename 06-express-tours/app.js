@@ -11,7 +11,7 @@ const indexHandler = (req, res) => {
     res.status(200).json(result);
 };
 
-app.get('/', indexHandler);
+app.post('/', indexHandler);
 
 app.listen(8080, () => {
     console.log('App running on port 8080');
