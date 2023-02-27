@@ -2,4 +2,3 @@
 /.idea
 .DS_Store
 dev-data/.DS_Store
-config.env
