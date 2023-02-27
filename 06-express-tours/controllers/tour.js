@@ -4,6 +4,8 @@ const tours = JSON.parse(toursData);
 
 //CRUD OPERATIONS
 exports.getAllTours = (req, res) => {
+    console.log(req.requestTime);
+
     res.status(200).json({
         code: 200,
         msg: `OK`,
