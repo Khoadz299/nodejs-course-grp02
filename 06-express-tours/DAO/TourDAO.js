@@ -1,5 +1,15 @@
 const dbConfig = require('./../database/dbconfig');
 const sql = require('mssql');
+const TourImageDAO = require('./TourImageDAO');
+const TourStartDateDAO = require('./TourStartDateDAO');
+
+async function setTourInfo(tour){
+    const images = await TourImageDAO.getByTourId(tour.id);
+    const startDates = await TourStartDateDAO.getByTourId(tour.id);
+    tour.images = images.map(i => i.imgName);
+    tour.startDates = startDates.map(d => d.date);
+    return tour
+}
 
 exports.getAllTours = async () => {
     if (!dbConfig.db.pool){
@@ -7,8 +17,16 @@ exports.getAllTours = async () => {
     }
     let request = dbConfig.db.pool.request();
     const result = await request.query('select * from Tours');
+
+    const tours = result.recordsets[0];
+    const resultTours = [];
+    for (let i = 0 ; i < tours.length; i++){
+        let tour = tours[i];
+        tour = await setTourInfo(tour);
+        resultTours.push(tour);
+    }
     // console.log(result);
-    return result.recordsets[0];
+    return resultTours;
 }
 
 exports.getTourById = async (id) => {
@@ -19,8 +37,12 @@ exports.getTourById = async (id) => {
     let result = await request
         .input('id', sql.Int, id)
         .query('select * from Tours where id = @id');
+    let tour = result.recordsets[0][0];
+    if(tour){
+        tour = setTourInfo(tour);
+    }
     // console.log(result);
-    return result.recordsets[0][0];
+    return tour;
 }
 
 exports.getTourByName = async (name) => {
