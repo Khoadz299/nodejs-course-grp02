@@ -13,17 +13,13 @@ const TourImageDAO = require('./../DAO/TourImageDAO');
 const TourStartDateDAO = require('./../DAO/TourStartDateDAO');
 const TourDAO = require('./../DAO/TourDAO');
 
-
-
 async function importDB() {
   const TOUR_FILE_PATH = `${__dirname}/../dev-data/data/tours-simple.json`;
   let tours = JSON.parse(fs.readFileSync(TOUR_FILE_PATH, 'utf-8'));
-
   //import tour
   for (let i = 0; i < tours.length; i++) {
     let tour = tours[i];
     // console.log(tour);
-
     await TourDAO.addTourIfNotExisted(tour);
     let tourDB = await TourDAO.getTourById(tour.id);
     // console.log(tourDB);
@@ -31,24 +27,18 @@ async function importDB() {
         console.error(`cannot import tour with id ${tour.id}`)
         continue;
     }
-
-      if (tour.images) {
-          for (let j = 0; j < tour.images.length; j++) {
-              await TourImageDAO.addTourImageIfNotExisted(tour.id, tour.images[j]);
-          }
+    if (tour.images) {
+      for (let j = 0; j < tour.images.length; j++) {
+          await TourImageDAO.addTourImageIfNotExisted(tour.id, tour.images[j]);
       }
-
-      if (tour.startDates) {
-          for (let j = 0; j < tour.startDates.length; j++) {
-              let date = new Date(tour.startDates[j]);
-              await TourStartDateDAO.addTourStartDateIfNotExisted(tour.id, date.toISOString());
-          }
+    }
+    if (tour.startDates) {
+      for (let j = 0; j < tour.startDates.length; j++) {
+          let date = new Date(tour.startDates[j]);
+          await TourStartDateDAO.addTourStartDateIfNotExisted(tour.id, date.toISOString());
       }
-    
-    
+    }
   }
-
-
 }
 
 async function dbClean() {
@@ -60,7 +50,6 @@ async function dbClean() {
 async function test() {
   let tourStarDates = await TourStartDateDAO.getByTourId(1);
   let tourImages = await TourImageDAO.getByTourId(1);
-
   console.log(tourStarDates);
   console.log(tourImages);
 }
@@ -70,7 +59,6 @@ appPool
   .then(async function (pool) {
     dbConfig.db.pool = pool;
     console.log('SQL Connected!');
-
     if (process.argv[2] === '--clean') {
       console.log('cleaning db ...');
       await dbClean();

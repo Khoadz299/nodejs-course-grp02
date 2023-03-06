@@ -79,7 +79,6 @@ exports.updateTourById = async (id, updateInfo) => {
     return result.recordsets;
 }
 
-
 exports.createNewTour = async(tour) => {
     if(!dbConfig.db.pool){
         throw new Error('Not connected to db');
@@ -93,6 +92,44 @@ exports.createNewTour = async(tour) => {
         .input('rating', sql.Float, tour.rating)
         .input('price', sql.Int, tour.price)
         .query('insert into Tours (name, rating, price) values (@name,@rating,@price)');
+    // console.log(result);
+    return result.recordsets;
+}
+
+exports.addTourIfNotExisted = async (tour) => {
+    if (!dbConfig.db.pool) {
+        throw new Error('Not connected to db');
+    }
+    let result = await dbConfig.db.pool
+        .request()
+        .input('id', sql.Int, tour.id)
+        .input('name', sql.VarChar, tour.name)
+        .input('duration', sql.Int, tour.duration)
+        .input('maxGroupSize', sql.Int, tour.maxGroupSize)
+        .input('difficulty', sql.VarChar, tour.difficulty)
+        .input('ratingsAverage', sql.Float, tour.ratingsAverage)
+        .input('ratingsQuantity', sql.Int, tour.ratingsQuantity)
+        .input('price', sql.Int, tour.price)
+        .input('summary', sql.VarChar, tour.summary)
+        .input('description', sql.VarChar, tour.description)
+        .input('imageCover', sql.VarChar, tour.imageCover)
+        .query(
+            'insert into Tours ' +
+            '(id, name, duration, maxGroupSize, difficulty, ratingsAverage, ratingsQuantity, price, summary, description, imageCover)' +
+            ' select @id, @name, @duration, @maxGroupSize, @difficulty, @ratingsAverage, @ratingsQuantity ,@price, @summary, @description, @imageCover' +
+            ' WHERE NOT EXISTS(SELECT * FROM Tours WHERE id = @id)'
+        );
+
+    // console.log(result);
+    return result.recordsets;
+}
+
+
+exports.clearAll = async () => {
+    if (!dbConfig.db.pool) {
+        throw new Error('Not connected to db');
+    }
+    let result = await dbConfig.db.pool.request().query('delete Tours');
     // console.log(result);
     return result.recordsets;
 }
