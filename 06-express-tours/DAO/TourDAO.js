@@ -136,6 +136,7 @@ exports.addTourIfNotExisted = async (tour) => {
         .input('description', sql.VarChar, tour.description)
         .input('imageCover', sql.VarChar, tour.imageCover)
         .query(
+            'SET IDENTITY_INSERT Tours ON ' +
             'insert into Tours ' +
             '(id, name, duration, maxGroupSize, difficulty, ratingsAverage, ratingsQuantity, price, summary, description, imageCover)' +
             ' select @id, @name, @duration, @maxGroupSize, @difficulty, @ratingsAverage, @ratingsQuantity ,@price, @summary, @description, @imageCover' +

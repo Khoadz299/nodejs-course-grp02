@@ -13,6 +13,19 @@ exports.getByTourId = async (tourId) => {
     return result.recordsets[0];
 }
 
+exports.deleteByTourId = async (tourId) => {
+    if (!dbConfig.db.pool) {
+        throw new Error('Not connected to db');
+    }
+
+    let result = await dbConfig.db.pool
+        .request()
+        .input('tourId', sql.Int, tourId)
+        .query('delete TourStartDate where tourId = @tourId');
+
+    // console.log(result);
+    return result.recordsets[0];
+}
 
 exports.addTourStartDateIfNotExisted = async (tourId, date) => {
     if (!dbConfig.db.pool) {
