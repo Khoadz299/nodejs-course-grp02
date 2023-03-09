@@ -30,15 +30,33 @@ exports.checkTourById = async (req, res, next, val) => {
 
 //CRUD OPERATIONS
 exports.getAllTours = async (req, res) => {
-    console.log(req.requestTime);
-    const tours = await TourDAO.getAllTours();
+    // console.log(req.requestTime);
+    // const tours = await TourDAO.getAllTours();
+    // res.status(200).json({
+    //     code: 200,
+    //     msg: `OK`,
+    //     data: {
+    //         tours
+    //     }
+    // })
+
+    console.log(req.query);
+
+
+    const {page,pageSize,totalPage,totalItem,tours} = await TourDAO.getAllTours(req.query);
+
+    // console.log(tours);
     res.status(200).json({
-        code: 200,
-        msg: `OK`,
+        //200 - OK
+        status: 'success',
+        page,
+        pageSize,
+        totalPage,
+        totalItem,
         data: {
             tours
-        }
-    })
+        },
+    });
 }
 
 exports.getTour = async (req, res) => {
