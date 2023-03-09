@@ -111,9 +111,20 @@ exports.createNewTour = async(tour) => {
     let request = dbConfig.db.pool.request();
     let result = await request
         .input('name', sql.VarChar, tour.name)
-        .input('rating', sql.Float, tour.rating)
+        .input('duration', sql.Int, tour.duration)
+        .input('maxGroupSize', sql.Int, tour.maxGroupSize)
+        .input('difficulty', sql.VarChar, tour.difficulty)
+        .input('ratingsAverage', sql.Float, tour.ratingsAverage)
+        .input('ratingsQuantity', sql.Int, tour.ratingsQuantity)
         .input('price', sql.Int, tour.price)
-        .query('insert into Tours (name, rating, price) values (@name,@rating,@price)');
+        .input('summary', sql.VarChar, tour.summary)
+        .input('description', sql.VarChar, tour.description)
+        .input('imageCover', sql.VarChar, tour.imageCover)
+        .query(
+            'insert into Tours ' +
+            '(name, duration, maxGroupSize, difficulty, ratingsAverage, ratingsQuantity, price, summary, description, imageCover)' +
+            'values (@name, @duration, @maxGroupSize, @difficulty, @ratingsAverage, @ratingsQuantity ,@price, @summary, @description, @imageCover)'
+        );
     // console.log(result);
     return result.recordsets;
 }

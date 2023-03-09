@@ -1,4 +1,6 @@
 const TourDAO = require('./../DAO/TourDAO')
+const TourImageDAO = require('./../DAO/TourImageDAO')
+const TourStartDateDAO = require('./../DAO/TourStartDateDAO')
 
 exports.checkTourById = async (req, res, next, val) => {
     try{
@@ -51,11 +53,22 @@ exports.getTour = async (req, res) => {
 }
 
 exports.createTour = async (req, res) => {
-    // console.log(req.body);
     const newTour = req.body;
     try {
         await TourDAO.createNewTour(newTour);
-        const tour = await TourDAO.getTourByName(newTour.name);
+        let tour = await TourDAO.getTourByName(newTour.name);
+        if (newTour.images && newTour.images.length > 0){
+            for (let j = 0; j < newTour.images.length; j++) {
+                await TourImageDAO.addTourImageIfNotExisted(tour.id, newTour.images[j]);
+            }
+        }
+        if (newTour.startDates && newTour.startDates.length > 0){
+            for (let j = 0; j < newTour.startDates.length; j++) {
+                let date = new Date(newTour.startDates[j]);
+                await TourStartDateDAO.addTourStartDateIfNotExisted(tour.id, date.toISOString());
+            }
+        }
+        tour = await TourDAO.getTourById(newTour.id);
         return res
             .status(200)
             .json({
@@ -79,7 +92,9 @@ exports.createTour = async (req, res) => {
 exports.deleteTour = async (req, res) => {
     const id = req.params.id*1;
     try {
-        await TourDAO.deleteTourById(id)
+        await TourImageDAO.deleteByTourId(id);
+        await TourStartDateDAO.deleteByTourId(id);
+        await TourDAO.deleteTourById(id);
         return res
             .status(200)
             .json({

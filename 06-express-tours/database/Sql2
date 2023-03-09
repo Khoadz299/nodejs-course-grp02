@@ -79,7 +79,7 @@ values
 -- insert data into table Tours if not existed
 use ToursDemoGrp02
 go
-insert into Tours
+SET IDENTITY_INSERT Tours ON insert into Tours
     (id, name, difficulty, duration, maxGroupSize, price, description, imageCover)
 SELECT
     0, 'tour 1', 'medium', 10, 5, 10000, 'description', 'image'
