@@ -14,11 +14,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/api/v1/tours",
+							"raw": "localhost:9000/api/v1/tours",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9000",
 							"path": [
 								"api",
 								"v1",
@@ -34,11 +34,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/api/v1/tours/1",
+							"raw": "localhost:9000/api/v1/tours/1",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9000",
 							"path": [
 								"api",
 								"v1",
@@ -56,7 +56,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "  {\n    \"name\": \"The Northern Lights\",\n    \"price\": 1497,\n    \"rating\": 3\n  }",
+							"raw": "{\n    \"name\": \"The Snow Adventurer aaaa\",\n    \"duration\": 4,\n    \"maxGroupSize\": 10,\n    \"difficulty\": \"difficult\",\n    \"ratingsAverage\": 4.5,\n    \"ratingsQuantity\": 13,\n    \"price\": 997,\n    \"summary\": \"Exciting adventure in the snow with snowboarding and skiing\",\n    \"description\": \"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum!\\nDolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur, exercitation ullamco laboris nisi ut aliquip. Lorem ipsum dolor sit amet, consectetur adipisicing elit!\",\n    \"imageCover\": \"tour-3-cover.jpg\",\n    \"images\": [\"tour-3-1.jpg\", \"tour-3-2.jpg\", \"tour-3-3.jpg\"],\n    \"startDates\": [\"2022-01-05,10:00\", \"2022-02-12,10:00\", \"2023-01-06,10:00\"]\n  }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -64,11 +64,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/api/v1/tours",
+							"raw": "localhost:9000/api/v1/tours",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9000",
 							"path": [
 								"api",
 								"v1",
@@ -84,11 +84,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/api/v1/tours/2",
+							"raw": "localhost:9000/api/v1/tours/2",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "9000",
 							"path": [
 								"api",
 								"v1",
@@ -105,12 +105,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:9001/api/v1/tours",
+							"raw": "http://localhost:9000/api/v1/tours?duration[gte]=5&duration[lt]=8&price[lt]=500&difficulty=easy&pageSize=10&sort=duration,-maxGroupSize&page=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "9001",
+							"port": "9000",
 							"path": [
 								"api",
 								"v1",
@@ -119,18 +119,15 @@
 							"query": [
 								{
 									"key": "duration[gte]",
-									"value": "5",
-									"disabled": true
+									"value": "5"
 								},
 								{
 									"key": "duration[lt]",
-									"value": "8",
-									"disabled": true
+									"value": "8"
 								},
 								{
 									"key": "price[lt]",
-									"value": "500",
-									"disabled": true
+									"value": "500"
 								},
 								{
 									"key": "price[eq]",
@@ -139,23 +136,19 @@
 								},
 								{
 									"key": "difficulty",
-									"value": "easy",
-									"disabled": true
+									"value": "easy"
 								},
 								{
 									"key": "pageSize",
-									"value": "10",
-									"disabled": true
+									"value": "10"
 								},
 								{
 									"key": "sort",
-									"value": "duration,-maxGroupSize",
-									"disabled": true
+									"value": "duration,-maxGroupSize"
 								},
 								{
 									"key": "page",
-									"value": "1",
-									"disabled": true
+									"value": "1"
 								}
 							]
 						}
@@ -169,7 +162,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"AAA\",\n    \"duration\": 15\n}",
+							"raw": "{\n    \"name\": \"AAA\",\n    \"ratingsAverage\": 3.6,\n    \"price\": 1000\n}",
 							"options": {
 								"raw": {
 									"language": "json"
