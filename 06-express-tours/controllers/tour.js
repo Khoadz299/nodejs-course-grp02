@@ -86,7 +86,7 @@ exports.createTour = async (req, res) => {
                 await TourStartDateDAO.addTourStartDateIfNotExisted(tour.id, date.toISOString());
             }
         }
-        tour = await TourDAO.getTourById(newTour.id);
+        tour = await TourDAO.getTourById(tour.id);
         return res
             .status(200)
             .json({
