@@ -2,9 +2,10 @@ const dbConfig = require('./../database/dbconfig');
 const dbUtils = require('../utils/dbUtils')
 const StaticData = require('../utils/StaticData')
 
-const sql = require('mssql');
 const TourImageDAO = require('./TourImageDAO');
 const TourStartDateDAO = require('./TourStartDateDAO');
+const TourGuideDAO = require('./TourGuideDAO');
+const TourLocationDAO = require('./TourLocationDAO');
 const TourSchema = require('../model/Tour');
 
 async function setTourInfo(tour){
@@ -14,26 +15,19 @@ async function setTourInfo(tour){
     tour.startDates = startDates.map(d => d.date);
     return tour
 }
-
-
 exports.getAllTours = async (filter) => {
-    if (!dbConfig.db.pool) {
+    if (!dbConfig.db.pool){
         throw new Error('Not connected to db');
     }
-
     let query = `SELECT * from ${TourSchema.schemaName}`
-    let countQuery = `SELECT COUNT(DISTINCT id) as totalItem from ${TourSchema.schemaName}`
+    let countQuery = `SELECT COUNT(DISTINCT ${TourSchema.schema.id.name}) as totalItem from ${TourSchema.schemaName}`
 
     const page = filter.page * 1 || 1;
     let pageSize = filter.pageSize * 1 || StaticData.config.MAX_PAGE_SIZE;
     if (pageSize > StaticData.config.MAX_PAGE_SIZE) {
         pageSize = StaticData.config.MAX_PAGE_SIZE;
     }
-
-    const {filterStr,paginationStr} = dbUtils.getFilterQuery(TourSchema.schema, filter,page ,pageSize, TourSchema.defaultSort);
-
-    console.log(filterStr);
-    console.log(paginationStr);
+    const {filterStr, paginationStr} = dbUtils.getFilterQuery(TourSchema.schema, filter, page, pageSize, TourSchema.defaultSort);
 
     if (filterStr){
         query += ' ' + filterStr;
@@ -43,12 +37,8 @@ exports.getAllTours = async (filter) => {
     if (paginationStr){
         query += ' ' + paginationStr;
     }
-
-    console.log(query);
-    // console.log(countQuery);
-
-    let result = await dbConfig.db.pool.request().query(query);
-
+    // console.log(query);
+    const result = await dbConfig.db.pool.request().query(query);
     let countResult = await dbConfig.db.pool.request().query(countQuery);
 
     let totalItem = 0;
@@ -60,10 +50,7 @@ exports.getAllTours = async (filter) => {
     const tours = result.recordsets[0];
     for (let i = 0 ; i < tours.length; i++){
         const tour = tours[i];
-        const images = await TourImageDAO.getByTourId(tour.id);
-        const startDates = await TourStartDateDAO.getByTourId(tour.id);
-        tour.images = images.map(i => i.imgName);
-        tour.startDates = startDates.map(d => d.date);
+        await setTourInfo(tour);
     }
 
     return {
@@ -74,8 +61,6 @@ exports.getAllTours = async (filter) => {
         tours: tours
     };
 }
-
-
 exports.getTourById = async (id) => {
     if (!dbConfig.db.pool){
         throw new Error('Not connected to db');
@@ -117,43 +102,23 @@ exports.deleteTourById = async (id) => {
     return result.recordsets;
 }
 
-// exports.updateTourById = async (id, updateInfo) => {
-//     if(!dbConfig.db.pool){throw new Error('Not connected to db');}
-//     if (!updateInfo){throw new Error('Invalid input param');}
-//     let request = dbConfig.db.pool.request();
-//     request.input(TourSchema.schema.id.name, TourSchema.schema.id.sqlType, id);
-//
-//     let query = `update ${TourSchema.schemaName} set`;
-//     if (updateInfo.name){
-//         request.input(TourSchema.schema.name.name, TourSchema.schema.name.sqlType, updateInfo.name);
-//         query += ` ${TourSchema.schema.name.name} = @${TourSchema.schema.name.name},`;
-//     }
-//     if (typeof updateInfo.price === 'number' && updateInfo.price >= 0){
-//         request.input(TourSchema.schema.price.name, TourSchema.schema.price.sqlType, updateInfo.price);
-//         query += ` ${TourSchema.schema.price.name} = @${TourSchema.schema.price.name},`;
-//     }
-//     query = query.slice(0, -1); //receive query without last character ','
-//     query += ` where ${TourSchema.schema.id.name} = @${TourSchema.schema.id.name}`
-//     console.log(query);
-//     let result = await request.query(query);
-//     console.log(result);
-//     return result.recordsets;
-// }
-
 exports.updateTourById = async (id, updateInfo) => {
+    // update Tours
+    // set  name = 'Tours 3',
+    //     price = 200,
+    //     rating = 4.5
+    // where Id = 2
     if(!dbConfig.db.pool){throw new Error('Not connected to db');}
     if (!updateInfo){throw new Error('Invalid input param');}
     let query = `update ${TourSchema.schemaName} set`;
     // 'update Tour set name = @name, ratingsAverage = @ratingsAverage, price = @price where id = @id';
 
-    const {request,updateStr} =
-        dbUtils.getUpdateQuery(TourSchema.schema, dbConfig.db.pool.request(), updateInfo);
+    const {request,updateStr} = dbUtils.getUpdateQuery(TourSchema.schema, dbConfig.db.pool.request(), updateInfo);
     if (!updateStr){
         throw new Error('Invalid update param');
     }
-    request.input('id', TourSchema.schema.id.sqlType, id);
-    query += ' ' + updateStr +
-        ` where ${TourSchema.schema.id.name} = @${TourSchema.schema.id.name}`;
+    request.input(TourSchema.schema.id.name, TourSchema.schema.id.sqlType, id);
+    query += ' ' + updateStr + ` where ${TourSchema.schema.id.name} = @${TourSchema.schema.id.name}`;
     console.log(query);
     let result = await request.query(query);
     // console.log(result);
@@ -171,11 +136,13 @@ exports.createNewTour = async(tour) => {
     tour.createdAt = now.toISOString();
     let insertData = TourSchema.validateData(tour);
     let query = `insert into ${TourSchema.schemaName}`;
-    const {request, insertFieldNamesStr,insertValuesStr} =
-        dbUtils.getInsertQuery(TourSchema.schema, dbConfig.db.pool.request(), insertData);
+    const {request, insertFieldNamesStr,insertValuesStr} = dbUtils.getInsertQuery(TourSchema.schema, dbConfig.db.pool.request(), insertData);
+
     query += ' (' + insertFieldNamesStr + ') values (' + insertValuesStr + ')';
     console.log(query);
+
     let result = await request.query(query);
+    // console.log(result);
     return result.recordsets;
 }
 
@@ -186,21 +153,22 @@ exports.addTourIfNotExisted = async (tour) => {
     let now = new Date();
     tour.createdAt = now.toISOString();
     let insertData = TourSchema.validateData(tour);
+
     let query = `SET IDENTITY_INSERT ${TourSchema.schemaName} ON insert into ${TourSchema.schemaName}`;
 
-    const {request, insertFieldNamesStr,insertValuesStr} =
-        dbUtils.getInsertQuery(TourSchema.schema, dbConfig.db.pool.request(), insertData);
+    const {request, insertFieldNamesStr,insertValuesStr} = dbUtils.getInsertQuery(TourSchema.schema, dbConfig.db.pool.request(), insertData);
     if (!insertFieldNamesStr || !insertValuesStr){
         throw new Error('Invalid insert param');
     }
 
     query += ' (' + insertFieldNamesStr + ') select ' + insertValuesStr +
-        ` WHERE NOT EXISTS`+
-        `(SELECT * FROM ${TourSchema.schemaName} WHERE ${TourSchema.schema.name.name} = @${TourSchema.schema.name.name})` +
+        ` WHERE NOT EXISTS(SELECT * FROM ${TourSchema.schemaName} WHERE name = @name)` +
         ` SET IDENTITY_INSERT ${TourSchema.schemaName} OFF`;
     // console.log(query);
 
     let result = await request.query(query);
+
+    // console.log(result);
     return result.recordsets;
 }
 

@@ -1,5 +1,5 @@
 const dbConfig = require('./../database/dbconfig');
-const dbUtils = require('../utils/dbUtils');
+const dbUtils = require('../utils/dbUtils')
 const sql = require('mssql');
 const TourStartDateSchema = require('../model/TourStartDate');
 
@@ -39,18 +39,16 @@ exports.addTourStartDateIfNotExisted = async (tourId, date) => {
     });
     let query = `insert into ${TourStartDateSchema.schemaName}`;
 
-    const {request, insertFieldNamesStr,insertValuesStr} =
-        dbUtils.getInsertQuery(TourStartDateSchema.schema, dbConfig.db.pool.request(), insertData);
+    const {request, insertFieldNamesStr,insertValuesStr} = dbUtils.getInsertQuery(TourStartDateSchema.schema, dbConfig.db.pool.request(), insertData);
     if (!insertFieldNamesStr || !insertValuesStr){
         throw new Error('Invalid insert param');
     }
 
     query += ' (' + insertFieldNamesStr + ') select ' + insertValuesStr +
-        ` WHERE NOT EXISTS(SELECT * FROM ${TourStartDateSchema.schemaName} `+
-        `WHERE ${TourStartDateSchema.schema.tourId.name} = @${TourStartDateSchema.schema.tourId.name} `+
-        `AND ${TourStartDateSchema.schema.date.name} = @${TourStartDateSchema.schema.date.name})`;
+        ` WHERE NOT EXISTS(SELECT * FROM ${TourStartDateSchema.schemaName} WHERE ${TourStartDateSchema.schema.tourId.name} = @${TourStartDateSchema.schema.tourId.name} AND ${TourStartDateSchema.schema.date.name} = @${TourStartDateSchema.schema.date.name})`;
     // console.log(query);
     let result = await request.query(query);
+    // console.log(result);
     return result.recordsets;
 }
 
