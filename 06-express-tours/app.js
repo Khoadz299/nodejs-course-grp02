@@ -17,7 +17,9 @@ app.use((req, res, next) => {
 //in express, everything is middleware => router = middleware
 const tourRouter = require('./routes/tour');
 const userRouter = require('./routes/user');
-app.use('/api/v1/tours', tourRouter); //use tourRouter as a middleware for specific route '/api/v1/tours'
-app.use('/api/v1/users', userRouter); //use userRouter as a middleware for specific route '/api/v1/users'
-
+const reviewRouter = require('./routes/review');
+//router is a middleware
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 module.exports = app;
