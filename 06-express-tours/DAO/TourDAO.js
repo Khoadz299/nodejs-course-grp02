@@ -11,10 +11,15 @@ const TourSchema = require('../model/Tour');
 async function setTourInfo(tour){
     const images = await TourImageDAO.getByTourId(tour.id);
     const startDates = await TourStartDateDAO.getByTourId(tour.id);
+    const guides = await TourGuideDAO.getByTourId(tour.id);
+    const locations = await TourLocationDAO.getByTourId(tour.id);
     tour.images = images.map(i => i.imgName);
     tour.startDates = startDates.map(d => d.date);
+    tour.guides = guides;
+    tour.locations = locations;
     return tour
 }
+
 exports.getAllTours = async (filter) => {
     if (!dbConfig.db.pool){
         throw new Error('Not connected to db');
@@ -61,6 +66,7 @@ exports.getAllTours = async (filter) => {
         tours: tours
     };
 }
+
 exports.getTourById = async (id) => {
     if (!dbConfig.db.pool){
         throw new Error('Not connected to db');
