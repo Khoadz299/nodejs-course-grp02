@@ -1,7 +1,15 @@
 const express = require('express');
 const userController = require('./../controllers/user');
+const authController = require('./../controllers/auth');
 
 const router = express.Router(); //router is a middleware
+
+
+router
+    .route('/signup')
+    .post(authController.signup);
+
+
 
 //using param middleware - param middleware is middleware that run only if certain parameters appears in req url
 router.param('id', userController.checkID);
