@@ -191,6 +191,67 @@
 			"name": "users",
 			"item": [
 				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userName\": \"AAA\",\n    \"name\": \"Jonas Schmedtmann\",\n    \"email\": \"AAA@test.com\",\n    \"password\": \"123456\",\n    \"repeatPassword\": \"123456\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/api/v1/users/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userName\": \"AAA\",\n    \"name\": \"Jonas Schmedtmann\",\n    \"email\": \"AAA@test.com\",\n    \"role\": 1,\n    \"active\": true,\n    \"photo\": \"user-1.jpg\",\n    \"password\": \"123456\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9000/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "get users",
 					"request": {
 						"method": "GET",
@@ -228,36 +289,6 @@
 								"v1",
 								"users",
 								"7"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create user",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"userName\": \"AAA\",\n    \"name\": \"Jonas Schmedtmann\",\n    \"email\": \"AAA@test.com\",\n    \"role\": 1,\n    \"active\": true,\n    \"photo\": \"user-1.jpg\",\n    \"password\": \"123456\"\n  }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:9000/api/v1/users",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "9000",
-							"path": [
-								"api",
-								"v1",
-								"users"
 							]
 						}
 					},
