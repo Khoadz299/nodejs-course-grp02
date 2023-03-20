@@ -28,7 +28,7 @@ exports.getByTourId = async function(tourId) {
       role: x.role
     }
   });
-  // `use ToursDemoGrp01
+  // `use ToursDemoGrp02
   // go
   // SELECT t.tourId, t.userId, u.userName, u.email, u.name, u.photo, u.role
   // from TourGuide as t

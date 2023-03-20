@@ -35,7 +35,7 @@ exports.getByTourId = async function(tourId) {
       address: x.address,
     }
   });
-  // `use ToursDemoGrp01
+  // `use ToursDemoGrp02
   // go
   // SELECT t.tourId, t.locationId, t.day, l.description, l.type, l.lat, l.lng, l.address
   // from TourLocation as t
