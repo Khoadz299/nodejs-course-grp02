@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const tourController = require('./../controllers/tour');
+const authController = require('./../controllers/auth');
+const StaticData = require("../utils/StaticData");
 
 //middleware handles any Url
 // started with /api/v1/tours
@@ -12,8 +14,13 @@ router.param('id',
 
 router
     .route('/')
-    .get(tourController.getAllTourHandler)
-    .post(tourController.createTourHandler);
+    .get(authController.protect,tourController.getAllTourHandler)
+    .post(authController.protect,
+        authController.restrictTo(
+            StaticData.AUTH.Role.admin,
+            StaticData.AUTH.Role.leadGuide,
+            ),
+        tourController.createTourHandler);
 router
     .route('/:id')
     .get(tourController.getTourHandler)
