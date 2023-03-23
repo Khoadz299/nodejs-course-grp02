@@ -9,6 +9,10 @@ router
     .route('/signup')
     .post(authController.signup);
 
+router
+    .route('/login')
+    .post(authController.login);
+
 
 
 //using param middleware - param middleware is middleware that run only if certain parameters appears in req url
